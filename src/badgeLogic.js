@@ -1,8 +1,8 @@
 import { MyBadge } from './myBadge';
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import { ALL_CLASSES, ARENA_MAP_IDS_BY_NAME } from './constants';
-import { longestSequence, mean, median, secondsToHms } from './util';
+import { ALL_CLASSES, ARENA_MAP_IDS_BY_NAME } from './utils/constants';
+import { longestSequence, mean, median, secondsToHms } from './utils/util';
 
 export const computeBadges = data => {
   let myBadges = [];

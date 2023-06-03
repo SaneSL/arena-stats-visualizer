@@ -1,3 +1,5 @@
+import * as icons from './icons';
+
 export function secondsToHms(d) {
   d = Number(d);
   const h = Math.floor(d / 3600);
@@ -35,5 +37,32 @@ export const enemy = (enemyName, enemyClass) => {
     }
   } else {
     return enemyName;
+  }
+};
+
+export const classIcon = clazz => {
+  switch (clazz) {
+    case 'WARRIOR':
+      return icons.warrior;
+    case 'DEATHKNIGHT':
+      return icons.deathknight;
+    case 'PALADIN':
+      return icons.paladin;
+    case 'HUNTER':
+      return icons.hunter;
+    case 'SHAMAN':
+      return icons.shaman;
+    case 'ROGUE':
+      return icons.rogue;
+    case 'DRUID':
+      return icons.druid;
+    case 'PRIEST':
+      return icons.priest;
+    case 'MAGE':
+      return icons.mage;
+    case 'WARLOCK':
+      return icons.warlock;
+    default:
+      return icons.unknown;
   }
 };

@@ -1,0 +1,241 @@
+import BootstrapTable from 'react-bootstrap-table-next';
+import { classIcon } from '../utils/util';
+import * as icons from '../utils/icons';
+
+import {
+  ALL_CLASSES,
+  DEFAULT_BRACKETS,
+  DEFAULT_SEASONS,
+  timestampsOk,
+} from '../utils/constants';
+
+const Comps = ({ statsForEachComposition }) => {
+  const content = statsForEachComposition.map(item => {
+    return {
+      composition: item.comp,
+      total: JSON.stringify({
+        total: item.total,
+        aTotal: item.aTotal,
+        hTotal: item.hTotal,
+      }),
+      wins: JSON.stringify({
+        wins: item.wins,
+        aWins: item.aWins,
+        hWins: item.hWins,
+      }),
+      losses: JSON.stringify({
+        total: item.total,
+        wins: item.wins,
+        aTotal: item.aTotal,
+        aWins: item.aWins,
+        hTotal: item.hTotal,
+        hWins: item.hWins,
+      }),
+      percent: JSON.stringify({
+        wins: item.wins,
+        total: item.total,
+      }),
+      aPercent: JSON.stringify({
+        aTotal: item.aTotal,
+        aWins: item.aWins,
+      }),
+      hPercent: JSON.stringify({
+        hTotal: item.hTotal,
+        hWins: item.hWins,
+      }),
+    };
+  });
+
+  const columns = [
+    {
+      dataField: 'composition',
+      text: 'Enemy composition',
+      sort: true,
+      formatter: cell => {
+        const classes = cell.split('+');
+        return (
+          <div key={cell}>
+            {classes.map((clazz, idx) => (
+              <img
+                key={idx + clazz}
+                src={classIcon(clazz)}
+                width={'32'}
+                height={'32'}
+                alt={clazz}
+              />
+            ))}
+          </div>
+        );
+      },
+      sortValue: cell => {
+        // sort by bracket (2s -> 3s -> 5s -> unknown bracket/unknown class included) and then by ALL_CLASSES order
+        const classes = cell.split('+');
+        const firstCode = 'A'.charCodeAt(0); // 65
+        const indices = classes.map(clazz =>
+          ALL_CLASSES.indexOf(clazz) === -1
+            ? 'Z'
+            : String.fromCharCode(firstCode + ALL_CLASSES.indexOf(clazz))
+        ); // 'A' for warrior, 'B' for hunter... and 'Z' for unknown
+        return (
+          (indices.length === 0 || indices.includes('Z')
+            ? 'Z'
+            : '' + indices.length) + indices.join('')
+        ); // prefix with '2', '3', '5' or 'Z' depending on the bracket
+      },
+      headerStyle: (column, colIndex) => {
+        return { width: '200px' };
+      },
+    },
+    {
+      dataField: 'total',
+      text: 'Total matches',
+      sort: true,
+      formatter: cell => {
+        const item = JSON.parse(cell);
+        return (
+          <div>
+            {item.total} <span className="blue">({item.aTotal}</span> +{' '}
+            <span className="red">{item.hTotal}</span>)
+          </div>
+        );
+      },
+      sortValue: cell => JSON.parse(cell).total,
+      headerStyle: (column, colIndex) => {
+        return { width: '175px' };
+      },
+    },
+    {
+      dataField: 'wins',
+      text: 'Wins',
+      sort: true,
+      formatter: cell => {
+        const item = JSON.parse(cell);
+        return (
+          <div>
+            {item.wins} <span className="blue">({item.aWins}</span> +{' '}
+            <span className="red">{item.hWins}</span>)
+          </div>
+        );
+      },
+      sortValue: cell => JSON.parse(cell).wins,
+      headerStyle: (column, colIndex) => {
+        return { width: '175px' };
+      },
+    },
+    {
+      dataField: 'losses',
+      text: 'Losses',
+      sort: true,
+      formatter: cell => {
+        const item = JSON.parse(cell);
+        return (
+          <div>
+            {item.total - item.wins}{' '}
+            <span className="blue">({item.aTotal - item.aWins}</span> +{' '}
+            <span className="red">{item.hTotal - item.hWins}</span>)
+          </div>
+        );
+      },
+      sortValue: cell => {
+        const item = JSON.parse(cell);
+        return item.total - item.wins;
+      },
+      headerStyle: (column, colIndex) => {
+        return { width: '175px' };
+      },
+    },
+    {
+      dataField: 'percent',
+      text: '%',
+      sort: true,
+      formatter: cell => {
+        const item = JSON.parse(cell);
+        return <div>{((item.wins / item.total) * 100).toFixed(1)}</div>;
+      },
+      sortValue: cell => {
+        const item = JSON.parse(cell);
+        return item.wins / item.total;
+      },
+      headerStyle: (column, colIndex) => {
+        return { width: '90px' };
+      },
+    },
+    {
+      dataField: 'aPercent',
+      text: '% (A)',
+      headerFormatter: (column, colIndex, components) => (
+        <div>
+          <img
+            src={icons.alliance}
+            width={'24'}
+            height={'24'}
+            alt={'alliance'}
+          />{' '}
+          %{components.sortElement}
+        </div>
+      ),
+      sort: true,
+      formatter: cell => {
+        const item = JSON.parse(cell);
+        return (
+          <div className="blue">
+            {item.aTotal !== 0
+              ? ((item.aWins / item.aTotal) * 100).toFixed(1)
+              : '-'}
+          </div>
+        );
+      },
+      sortValue: cell => {
+        const item = JSON.parse(cell);
+        return item.aTotal !== 0 ? item.aWins / item.aTotal : -1;
+      },
+      headerStyle: (column, colIndex) => {
+        return { width: '90px' };
+      },
+    },
+    {
+      dataField: 'hPercent',
+      text: '% (H)',
+      headerFormatter: (column, colIndex, components) => (
+        <div>
+          <img src={icons.horde} width={'24'} height={'24'} alt={'horde'} /> %
+          {components.sortElement}
+        </div>
+      ),
+      sort: true,
+      formatter: cell => {
+        const item = JSON.parse(cell);
+        return (
+          <div className="red">
+            {item.hTotal !== 0
+              ? ((item.hWins / item.hTotal) * 100).toFixed(1)
+              : '-'}
+          </div>
+        );
+      },
+      sortValue: cell => {
+        const item = JSON.parse(cell);
+        return item.hTotal !== 0 ? item.hWins / item.hTotal : -1;
+      },
+      headerStyle: (column, colIndex) => {
+        return { width: '90px' };
+      },
+    },
+  ];
+
+  return (
+    <BootstrapTable
+      keyField="composition"
+      data={content}
+      columns={columns}
+      defaultSorted={[{ dataField: 'total', order: 'desc' }]}
+      bootstrap4={true}
+      striped={true}
+      bordered={true}
+      hover={true}
+      classes={'data-table'}
+    />
+  );
+};
+
+export default Comps;

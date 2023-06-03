@@ -11,8 +11,8 @@ import {
   SEASON_THREE_START,
   SEASON_TWO_END,
   SEASON_TWO_START,
-} from './constants';
-import { enemy } from './util';
+} from './utils/constants';
+import { enemy } from './utils/util';
 
 // noinspection JSUnusedGlobalSymbols
 export class Row {
@@ -189,7 +189,9 @@ export class Row {
   }
 
   isSeasonFive() {
-    return this.startTime > SEASON_FIVE_START && this.startTime < SEASON_FIVE_END;
+    return (
+      this.startTime > SEASON_FIVE_START && this.startTime < SEASON_FIVE_END
+    );
   }
 
   isSeasonSixOrLater() {

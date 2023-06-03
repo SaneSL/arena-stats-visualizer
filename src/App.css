@@ -1,38 +1,55 @@
 .App {
+  height: 100vh;
+  /* display: flex;
+  justify-content: center; */
+  align-items: center;
+}
+
+button.modal-toggle,
+.import-confirmed {
+  background-color: darkgray;
+  cursor: pointer;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  border: none;
+  margin-top: 10px;
+}
+
+.total-wins {
+  margin-bottom: 10px;
+}
+.data-table {
+  margin-top: 10px;
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.data-table th:hover {
+  background-color: aliceblue;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.red {
+  color: #dc3545;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.blue {
+  color: #0dcaf0;
+}
+.alerts-onboarding {
+  margin-top: 100px;
+}
+.as-toggle-button-groups {
+  margin: 10px 0 10px 0;
+}
+.as-toggle-button-groups > label {
+  margin: 0 10px 0 0;
+  border-radius: 0.25rem !important;
+}
+.as-toggle-button-groups > label:hover {
+  background-color: lightsteelblue;
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.as-toggle-button-groups > .btn-check:checked + .btn:hover {
+  background-color: cornflowerblue;
+  color: lightsteelblue;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+ul.sober {
+  list-style-type: none;
+  padding-left: 3px;
 }
