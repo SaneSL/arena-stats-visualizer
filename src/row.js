@@ -65,6 +65,8 @@ export class Row {
     this.enemyPlayerRace4 = row[45];
     this.enemyPlayerRace5 = row[46];
     this.enemyFaction = row[47];
+    this.teamComp = this.getTeamComposition();
+    this.enemyComp = this.getEnemyComposition();
   }
 
   // Returns an string containing uppercase classes joined by a '+', or an empty string if the composition is invalid!
@@ -91,6 +93,58 @@ export class Row {
     return enemyPlayerClasses
       .sort((a, b) => ALL_CLASSES.indexOf(a) - ALL_CLASSES.indexOf(b))
       .join('+');
+  };
+
+  getEnemyComposition = () => {
+    // We could have added all 5 classes and then filter out falsy values, but it would not be resilient to "ghost player" bugs. isValidNComp addresses that problem. Ghost player entries are therefore ignored.
+
+    const comp = [];
+
+    if (this.isValid5sComp()) {
+      comp.push(
+        this.enemyPlayerClass1,
+        this.enemyPlayerClass2,
+        this.enemyPlayerClass3,
+        this.enemyPlayerClass4,
+        this.enemyPlayerClass5
+      );
+    } else if (this.isValid3sComp()) {
+      comp.push(
+        this.enemyPlayerClass1,
+        this.enemyPlayerClass2,
+        this.enemyPlayerClass3
+      );
+    } else if (this.isValid2sComp()) {
+      comp.push(this.enemyPlayerClass1, this.enemyPlayerClass2);
+    }
+
+    return comp.sort((a, b) => ALL_CLASSES.indexOf(a) - ALL_CLASSES.indexOf(b));
+  };
+
+  getTeamComposition = () => {
+    // We could have added all 5 classes and then filter out falsy values, but it would not be resilient to "ghost player" bugs. isValidNComp addresses that problem. Ghost player entries are therefore ignored.
+
+    const comp = [];
+
+    if (this.isValid5sComp()) {
+      comp.push(
+        this.teamPlayerClass1,
+        this.teamPlayerClass2,
+        this.teamPlayerClass3,
+        this.teamPlayerClass4,
+        this.teamPlayerClass5
+      );
+    } else if (this.isValid3sComp()) {
+      comp.push(
+        this.teamPlayerClass1,
+        this.teamPlayerClass2,
+        this.teamPlayerClass3
+      );
+    } else if (this.isValid2sComp()) {
+      comp.push(this.teamPlayerClass1, this.teamPlayerClass2);
+    }
+
+    return comp.sort((a, b) => ALL_CLASSES.indexOf(a) - ALL_CLASSES.indexOf(b));
   };
 
   won = () =>

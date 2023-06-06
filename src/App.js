@@ -36,6 +36,7 @@ import ImportModal from './components/ImportModal';
 
 import { classIcon } from './utils/util';
 import Comps from './components/Comps';
+import MatchHistory from './components/MatchHistory';
 
 export default function App() {
   // React state
@@ -58,9 +59,9 @@ export default function App() {
       complete: function (results) {
         const parsed = results.data;
 
-        const result = parsed.flatMap(row =>
-          row.length > 1 ? [new Row(row)] : []
-        ); // skip empty lines in input string
+        const result = parsed.flatMap(row => {
+          return row.length > 1 ? [new Row(row)] : [];
+        }); // skip empty lines in input string
         const dataWithoutSkirm = result.filter(row => !row.isTitleOrSkirmish());
         const cleanData = cleanCorruptedData(dataWithoutSkirm);
         setCorruptedCount(dataWithoutSkirm.length - cleanData.length);
@@ -228,8 +229,9 @@ export default function App() {
             <span className="blue">Blue = vs Alliance</span>{' '}
             <span className="red">Red = vs Horde</span>
           </p>
-          <Comps statsForEachComposition={statsForEachComposition} />
-          <Statistics badges={badges} />
+          {/* <Comps statsForEachComposition={statsForEachComposition} />
+          <Statistics badges={badges} /> */}
+          <MatchHistory data={cleanData} />
           <p>
             Skipped <strong className="red">{corruptedCount}</strong>{' '}
             unprocessable records (all seasons/brackets considered). Open

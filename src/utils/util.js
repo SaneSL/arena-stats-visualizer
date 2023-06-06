@@ -12,6 +12,36 @@ export function secondsToHms(d) {
   return hDisplay + mDisplay + sDisplay;
 }
 
+export function formatToMMSS(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  const formattedMinutes = String(minutes).padStart(2, '0'); // Add leading zero if necessary
+  const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+}
+
+export function formatRatingGainLoss(ratingNew, diffRating) {
+  let sign, className;
+  if (diffRating <= 0) {
+    sign = '-';
+    className = 'ratingLossRed';
+  } else {
+    sign = '+';
+    className = 'ratingGainGreen';
+  }
+
+  const diffRatingAbs = Math.abs(diffRating);
+
+  return (
+    <span className={className}>
+      {ratingNew} ({sign}
+      {diffRatingAbs})
+    </span>
+  );
+}
+
 export const mean = array => array.reduce((a, b) => a + b, 0) / array.length;
 export const median = array =>
   array.slice().sort((a, b) => a - b)[Math.floor(array.length / 2)];
