@@ -10,6 +10,108 @@ import {
 } from '../utils/constants';
 
 const Comps = ({ statsForEachComposition }) => {
+  // Rendering logic - compute inferred state based on state (i.e. user inputs)
+  const processState = () => {
+    if (cleanData.length) {
+      const seasonSpecificData = getSeasonSpecificData(cleanData);
+      const bracketAndSeasonSpecificData =
+        getBracketSpecificData(seasonSpecificData);
+      const possibleCompositions = getAllPossibleCompositions(
+        bracketAndSeasonSpecificData
+      );
+      statsForEachComposition = getStatsForEachComposition(
+        bracketAndSeasonSpecificData,
+        possibleCompositions
+      );
+
+      totalMatches = statsForEachComposition.reduce(
+        (prev, curr) => prev + curr.total,
+        0
+      );
+      totalWins = statsForEachComposition.reduce(
+        (prev, curr) => prev + curr.wins,
+        0
+      );
+
+      badges = computeBadges(bracketAndSeasonSpecificData);
+    }
+  };
+
+  const getSeasonSpecificData = data => {
+    return data.filter(
+      row =>
+        (row.isSeasonOne() && seasons.includes('s1')) ||
+        (row.isSeasonTwo() && seasons.includes('s2')) ||
+        (row.isSeasonThree() && seasons.includes('s3')) ||
+        (row.isSeasonFour() && seasons.includes('s4')) ||
+        (row.isSeasonFive() && seasons.includes('s5')) ||
+        (row.isSeasonSixOrLater() && seasons.includes('s6'))
+    );
+  };
+
+  const getBracketSpecificData = data => {
+    return data.filter(
+      row =>
+        (row.is2sData() && brackets.includes('2s')) ||
+        (row.is3sData() && brackets.includes('3s')) ||
+        (row.is5sData() && brackets.includes('5s'))
+    );
+  };
+
+  const getAllPossibleCompositions = data => {
+    const compositions = new Set();
+    data.forEach(row => {
+      const comp = row.getComposition(brackets);
+      if (comp !== '') {
+        compositions.add(comp);
+      }
+    });
+    return Array.from(compositions).sort((a, b) => a.localeCompare(b)); // this .sort is useless; it will be re-sorted by wins anyway
+  };
+
+  const getStatsForEachComposition = (data, possibleCompositions) => {
+    const stats = possibleCompositions.map(comp => {
+      return {
+        comp,
+        total: 0,
+        wins: 0,
+        aTotal: 0,
+        aWins: 0,
+        hTotal: 0,
+        hWins: 0,
+      };
+    });
+
+    data.forEach(row => {
+      const comp = row.getComposition(brackets);
+      if (comp !== '') {
+        const index = stats.findIndex(s => s.comp === comp);
+        if (index !== -1) {
+          stats[index].total = stats[index].total + 1;
+          if (row.enemyFaction === 'ALLIANCE') {
+            stats[index].aTotal = stats[index].aTotal + 1;
+          } else if (row.enemyFaction === 'HORDE') {
+            stats[index].hTotal = stats[index].hTotal + 1;
+          }
+          if (row.won()) {
+            stats[index].wins = stats[index].wins + 1;
+            if (row.enemyFaction === 'ALLIANCE') {
+              stats[index].aWins = stats[index].aWins + 1;
+            } else if (row.enemyFaction === 'HORDE') {
+              stats[index].hWins = stats[index].hWins + 1;
+            }
+          }
+        } else {
+          console.log('Error with row', row);
+        }
+      }
+    });
+
+    return stats.sort((a, b) => b.total - a.total);
+  };
+
+  processState();
+
   const content = statsForEachComposition.map(item => {
     return {
       composition: item.comp,

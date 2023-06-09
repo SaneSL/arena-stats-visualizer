@@ -1,16 +1,4 @@
-import {
-  Alert,
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Modal,
-  Row as BootstrapRow,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-} from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
 import {
   ALL_CLASSES,
@@ -21,12 +9,12 @@ import {
 
 const SeasonAndBracket = ({ setSeasons, setBrackets }) => {
   return (
-    <>
+    <div className="d-flex flex-column align-items-start">
       <ToggleButtonGroup
         type="checkbox"
-        defaultValue={DEFAULT_SEASONS}
+        defaultValue={'s6'}
         onChange={setSeasons}
-        className="as-toggle-button-groups"
+        className="button-group-vertical"
       >
         <ToggleButton id="season-1" value={'s1'} variant={'outline-primary'}>
           Season 1
@@ -51,7 +39,7 @@ const SeasonAndBracket = ({ setSeasons, setBrackets }) => {
         type="checkbox"
         defaultValue={DEFAULT_BRACKETS}
         onChange={setBrackets}
-        className="as-toggle-button-groups"
+        className="mt-3"
       >
         <ToggleButton id="bracket-2s" value={'2s'} variant={'outline-primary'}>
           2v2
@@ -63,7 +51,7 @@ const SeasonAndBracket = ({ setSeasons, setBrackets }) => {
           5v5
         </ToggleButton>
       </ToggleButtonGroup>
-    </>
+    </div>
   );
 };
 

@@ -5,23 +5,34 @@ import { createRef } from 'react';
 
 //     date: new Date(item.endTime * 1000).toLocaleDateString('en-fi'),
 
-const MatchHistory = ({ data }) => {
+import { memo } from 'react';
+import { useEffect } from 'react';
+
+const MatchHistory = ({ data, brackets, seasons }) => {
   const dialogRef = createRef();
 
-  const content = data.map((item, index) => ({
-    index: index,
-    date: item.endTime,
-    map: ARENA_MAP_NAMES_BY_ID[item.zoneId] || 'N/A',
-    duration: item.duration,
-    team: item.teamComp,
-    rating: {
-      newTeamRating: item.newTeamRating,
-      diffRating: item.diffRating,
-    },
-    mmr: item.mmr,
-    enemyTeam: item.enemyComp,
-    enemyMmr: item.enemyMmr,
-  }));
+  const content = data.reduce((acc, item, index) => {
+    if (!brackets.includes(item.bracket) || !seasons.includes(item.season))
+      return acc;
+
+    acc.push({
+      index: index,
+      date: item.startTime,
+      map: ARENA_MAP_NAMES_BY_ID[item.zoneId] || 'N/A',
+      duration: item.duration,
+      team: item.teamComp,
+      rating: {
+        newTeamRating: item.newTeamRating,
+        diffRating: item.diffRating,
+      },
+      mmr: item.mmr,
+      enemyTeam: item.enemyComp,
+      enemyMmr: item.enemyMmr,
+      season: item.season,
+    });
+
+    return acc;
+  }, []);
 
   const columns = [
     {
@@ -102,9 +113,11 @@ const MatchHistory = ({ data }) => {
       dataField: 'enemyMmr',
       text: 'Enemy MMR',
     },
+    {
+      dataField: 'season',
+      text: 'Season',
+    },
   ];
-
-  console.log(data);
 
   return (
     <>
@@ -132,4 +145,21 @@ const MatchHistory = ({ data }) => {
   );
 };
 
-export default MatchHistory;
+const arePropsEqual = (oldProps, newProps) => {
+  // const difference = oldProps.brackets.filter(x =>
+  //   newProps.brackets.includes(x)
+  // );
+
+  // return difference.length != 0 ? false : true;
+
+  if (
+    !Object.is(oldProps.brackets, newProps.brackets) ||
+    !Object.is(oldProps.seasons, newProps.seasons)
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export default memo(MatchHistory, arePropsEqual);

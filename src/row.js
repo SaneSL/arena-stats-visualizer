@@ -65,8 +65,10 @@ export class Row {
     this.enemyPlayerRace4 = row[45];
     this.enemyPlayerRace5 = row[46];
     this.enemyFaction = row[47];
+    this.bracket = undefined;
     this.teamComp = this.getTeamComposition();
     this.enemyComp = this.getEnemyComposition();
+    this.season = this.getSeason();
   }
 
   // Returns an string containing uppercase classes joined by a '+', or an empty string if the composition is invalid!
@@ -134,17 +136,34 @@ export class Row {
         this.teamPlayerClass4,
         this.teamPlayerClass5
       );
+
+      this.bracket = '5s';
     } else if (this.isValid3sComp()) {
       comp.push(
         this.teamPlayerClass1,
         this.teamPlayerClass2,
         this.teamPlayerClass3
       );
+
+      this.bracket = '3s';
     } else if (this.isValid2sComp()) {
       comp.push(this.teamPlayerClass1, this.teamPlayerClass2);
+
+      this.bracket = '2s';
     }
 
     return comp.sort((a, b) => ALL_CLASSES.indexOf(a) - ALL_CLASSES.indexOf(b));
+  };
+
+  getSeason = () => {
+    if (this.isSeasonSixOrLater()) return 's6';
+    if (this.isSeasonFive()) return 's5';
+    if (this.isSeasonFour()) return 's4';
+    if (this.isSeasonThree()) return 's3';
+    if (this.isSeasonTwo()) return 's2';
+    if (this.isSeasonOne()) return 's1';
+
+    return null;
   };
 
   won = () =>

@@ -42,7 +42,7 @@ export const ARENA_MAP_IDS_BY_NAME = {
   'The Ring of Valor': ['4406', '618'],
 };
 
-export const DEFAULT_SEASONS = ['s1', 's2', 's3', 's4', 's5', 's6'];
+export const DEFAULT_SEASONS = ['s6'];
 export const DEFAULT_BRACKETS = ['2s'];
 
 export const ARENA_MAP_NAMES_BY_ID = {

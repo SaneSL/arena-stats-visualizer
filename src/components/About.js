@@ -16,7 +16,7 @@ import * as icons from '../utils/icons';
 
 const About = () => {
   return (
-    <Stack className="float-end">
+    <Stack className="flex-initial">
       <div>
         <img src={icons.github} width={'28'} height={'24'} alt={'github'} />
         Contribute to the tool{' '}
